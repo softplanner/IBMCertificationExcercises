@@ -1,0 +1,154 @@
+
+# AGGREGATION FUNCTIONS
+# ---------------------
+# Aggregate functions are used to perform calculations on a set of values
+# and return a single value. They are often used in conjunction with GROUP BY
+# clauses to perform calculations on groups of rows.
+#
+
+# 1. Write a query that calculates the total cost of all animal rescues in the PETRESCUE table.
+
+SELECT SUM(cost) 
+FROM PETRESCUE;
+
+# You can further assign a label to the query SUM_OF_COST.
+
+SELECT SUM(COST) AS SUM_OF_COST FROM PETRESCUE;
+
+# 2. Write a query that displays the maximum quantity of animals rescued (of any kind).
+
+SELECT MAX(QUANTITY)
+FROM PETRESCUE;
+
+# The query can easily be changed to display the minimum quantity using the MIN function instead.
+
+SELECT MIN(QUANTITY)
+FROM PETRESCUE;
+
+# 3. Write a query that displays the average cost of animals rescued.
+For this query, we will use AVG(COLUMN_NAME). The output of this query will be the average of all elements in the column. The query for this question can be written as
+
+SELECT AVG(COST)
+FROM PETRESCUE;
+
+# SCALAR FUNCTIONS AND STRING FUNCTIONS
+# -----------------------------------
+# Scalar functions are used to perform operations on a single value.
+# They can be used in the SELECT, WHERE, and HAVING clauses.
+#
+# String functions are used to manipulate strings.
+# They can be used in the SELECT, WHERE, and HAVING clauses.
+#
+#
+# 1. Write a query that displays the rounded integral cost of each rescue.
+# The ROUND function is used to round a number to a specified number of decimal places.
+# The query for this question can be written as
+
+SELECT ROUND(COST)
+FROM PETRESCUE;
+
+# In case the question was to round the value to 2 decimal places, the query would change to:
+
+SELECT ROUND(COST, 2)
+FROM PETRESCUE;
+
+# 2. Write a query that displays the length of each animal name.
+
+SELECT LENGTH(ANIMAL)
+FROM PETRESCUE;
+
+# 3.Write a query that displays the animal name in each rescue in uppercase.
+# The UPPER function is used to convert a string to uppercase.
+SELECT UCASE(ANIMAL)
+FROM PETRESCUE;
+
+# Just as easily, the user could ask for a lower case representation, and the query would be changed to:
+
+SELECT LCASE(ANIMAL) 
+FROM PETRESCUE;
+
+
+# DATE FUNCTIONS
+# ---------------
+# Date functions are used to manipulate dates.
+# They can be used in the SELECT, WHERE, and HAVING clauses.
+#
+# 1. Write a query that displays the rescue date.
+
+SELECT RESCUEDATE
+FROM PETRESCUE;
+
+# Write a query that displays the only the day of the rescue date.
+
+SELECT DAY(RESCUEDATE)
+FROM PETRESCUE;
+
+# SIMILARLY, MONTH AND YEAR WORKS
+
+SELECT MONTH(RESCUEDATE)
+FROM PETRESCUE;
+
+SELECT YEAR(RESCUEDATE)
+FROM PETRESCUE;
+
+# 2. Animals rescued should see the vet within three days of arrival. Write a query that displays the third day of each rescue.
+
+SELECT DATE_ADD(RESCUEDATE, INTERVAL 3 DAY)
+FROM PETRESCUE;
+
+# If the question was to add 2 months to the date, the query would change to:
+
+SELECT DATE_ADD(RESCUEDATE, INTERVAL 2 MONTH)
+FROM PETRESCUE;
+
+# Similarly, we can retrieve a date before the one given in the column by a given number using the function DATE_SUB. By modifying the same example, the following query would provide the date 3 days before the rescue.
+SELECT DATE_SUB(RESCUEDATE, INTERVAL 3 DAY)
+FROM PETRESCUE;
+
+# 3. Write a query that displays the length of time the animals have been rescued, for example, the difference between the current date and the rescue date.
+For this query, we will use the function DATEDIFF(Date_1, Date_2). This function calculates the difference between the two given dates and gives the output in number of days. For the given question, the query would be:
+
+SELECT DATEDIFF(CURRENT_DATE, RESCUEDATE)
+FROM PETRESCUE;
+
+# CURRENT_DATE is also an inbuilt function that returns the present date as known to the server.
+# To present the output in a YYYY-MM-DD format, another function FROM_DAYS(number_of_days)can be used. This function takes a number of days and returns the required formatted output. The query above would thus be modified to
+
+SELECT FROM_DAYS(DATEDIFF(CURRENT_DATE, RESCUEDATE))
+FROM PETRESCUE;
+
+# PRACTICE PROBLEMS
+# -----------------
+
+# 1. Write a query that displays the average cost of rescuing a single dog. Note that the cost per dog would not be the same in different instances.
+SELECT AVG(COST) AS AVG_COST 
+FROM PETRESCUE
+WHERE ANIMAL = "Dog";
+
+SELECT AVG(COST/QUANTITY) AS AVG_COST 
+FROM PETRESCUE
+WHERE ANIMAL = "Dog";
+
+# 2. Write a query that displays the animal name in each rescue in uppercase without duplications.
+
+SELECT DISTINCT UCASE(ANIMAL) AS ANIMAL
+FROM PETRESCUE;
+
+# 3. Write a query that displays all the columns from the PETRESCUE table where the animal(s) rescued are cats. Use cat in lowercase in the query.  
+
+SELECT * 
+FROM PETRESCUE
+WHERE LCASE(ANIMAL) = "cat";
+
+# 4. Write a query that displays the number of rescues in the 5th month.
+
+SELECT COUNT(*) AS NUM_OF_RES
+FROM PETRESCUE
+WHERE MONTH(RESCUEDATE) = 5;
+
+# SELECT SUM(QUANTITY) FROM PETRESCUE WHERE MONTH(RESCUEDATE)="05";
+
+# 5. The rescue shelter is supposed to find good homes for all animals within 1 year of their rescue. Write a query that displays the ID and the target date.
+
+SELECT ID, RESCUEDATE, DATE_ADD(RESCUEDATE, INTERVAL 1 YEAR) AS TARGET_DATE
+FROM PETRESCUE;
