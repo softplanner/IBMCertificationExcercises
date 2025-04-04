@@ -1,0 +1,68 @@
+# Accessing multiple tables with sub-queries
+# --------------------------------------------
+# Let us see some examples of queries requiring multiple table access using sub-queries.
+
+# Retrieve only the EMPLOYEES records corresponding to jobs in the JOBS table.
+# For such a question, you can implement the sub-query in the WHERE clause, such that the overlapping column of JOD ID can identify the required entries.
+
+SELECT * FROM EMPLOYEES 
+WHERE JOB_ID IN
+ (SELECT JOB_IDENT FROM JOBS);
+
+ # Retrieve JOB information for employees earning over $70,000.
+SELECT * FROM JOBS
+WHERE JOB_IDENT IN
+    (SELECT JOB_ID FROM EMPLOYEES WHERE SALARY > 70000);
+
+# Accessing multiple tables with Implicit Joins
+# --------------------------------------------
+# 1. Retrieve only the EMPLOYEES records corresponding to jobs in the JOBS table.
+# The same question as before, but now we will use Implicit Join to retrieve the required information. For this, you will combine the tables based on job IDs. Using the following query for this:
+
+SELECT *
+FROM EMPLOYEES, JOBS
+WHERE EMPLOYEES.JOB_ID = JOBS.JOB_IDENT;
+
+# 2. Redo the previous query using shorter aliases for table names.
+SELECT *
+FROM EMPLOYEES AS E, JOBS AS J
+WHERE E.JOB_ID = J.JOB_IDENT;
+
+# 3. In the previous query, retrieve only the Employee ID, Name, and Job Title.
+SELECT EMPLOYEES.EMP_ID, EMPLOYEES.F_NAME, EMPLOYEES.L_NAME, JOBS.JOB_TITLE
+FROM EMPLOYEES AS E, JOBS AS J
+WHERE E.JOB_ID = J.JOB_IDENT;
+
+# 4. Redo the previous query, but specify the fully qualified column names with aliases in the SELECT clause.
+SELECT E.EMP_ID, E.F_NAME, E.L_NAME, J.JOB_TITLE
+FROM EMPLOYEES AS E, JOBS AS J
+WHERE E.JOB_ID = J.JOB_IDENT;
+
+# Practice problems
+# -----------------
+
+# 1. Retrieve only the list of employees whose JOB_TITLE is Jr. Designer.
+# using sub-queries
+
+SELECT * FROM EMPLOYEES
+WHERE JOB_ID IN
+(SELECT JOB_IDENT FROM JOBS
+WHERE JOB_TITLE = 'Jr. Designer');
+
+# using implicit Joins
+
+SELECT *
+FROM EMPLOYEES, JOBS
+WHERE EMPLOYEES.JOB_ID = JOBS.JOB_IDENT AND JOBS.JOB_TITLE = 'Jr. Designer';
+
+# 2. Retrieve JOB information and a list of employees whose birth year is after 1976.
+# using sub-queries
+
+SELECT * FROM JOBS
+WHERE JOB_IDENT IN
+(SELECT JOB_ID FROM EMPLOYEES WHERE YEAR(B_DATE) > 1976);
+
+# using implicit Joins
+SELECT J.JOB_IDENT, J.JOB_TITLE, J.MIN_SALARY, J.MAX_SALARY
+FROM JOBS J, EMPLOYEES E
+WHERE J.JOB_IDENT = E.JOB_ID AND YEAR(E.B_DATE)>1976;
